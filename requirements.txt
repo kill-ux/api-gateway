@@ -1,0 +1,6 @@
+Flask
+pika
+requests
+python-dotenv
+waitress
+paste
