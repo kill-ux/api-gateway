@@ -15,3 +15,11 @@ def client(monkeypatch):
     
     app = create_app()
     return app.test_client()
+
+@pytest.fixture
+def fake_upstream_response(mocker):
+    resp = mocker.Mock()
+    resp.content = b'{}'
+    resp.status_code = 200
+    resp.headers = {"Content-Type": "application/json"}
+    return resp
