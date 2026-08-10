@@ -161,4 +161,3 @@ def test_queue_order_publish_error_returns_503(client, mocker: MockerFixture):
     assert resp.status_code == 503
     body = resp.get_json()
     assert "bomm" in body["error"]
-

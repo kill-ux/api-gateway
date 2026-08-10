@@ -119,4 +119,3 @@ def queue_order():
     except Exception as e:
         print(f"RabbitMQ Error: {type(e).__name__}: {str(e)}")
         return {"error": f"RabbitMQ Error: {type(e).__name__}: {str(e)}"}, 503
-

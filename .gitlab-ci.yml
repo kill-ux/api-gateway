@@ -1,16 +1,29 @@
 stages:
+  - build
   - test
 
-unit-test:
+variables:
+  PIP_CACHE_DIR: "$CI_PROJECT_DIR/.cache/pip"
+
+cache:
+  key: pip-cache
+  paths:
+    - .cache/pip
+
+
+build_job:
+  stage: build
+  image: python:3.12-slim
+  script:
+    - python3 -m venv venv
+    - source venv/bin/activate
+
+    - pip install --upgrade pip setuptools wheel
+    - pip install -r requirements.txt
+
+unit_test_job:
   stage: test
   image: python:3.12-slim
-  cache:
-    key: pip-cache
-    paths:
-      - .cache/pip
-  variables:
-    PIP_CACHE_DIR: "$CI_PROJECT_DIR/.cache/pip"
   script:
-    - pip install -r requirements.txt
     - pip install -r requirements-dev.txt
     - pytest -v tests/unit
