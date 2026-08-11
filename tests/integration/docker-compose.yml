@@ -37,7 +37,7 @@ services:
       - "8888:8888"
       - "8500:8500"
     volumes:
-      - ./mocks/inventory.json:/hoverfly/inventory.json:ro
+      - ./tests/integration/mocks/inventory.json:/hoverfly/inventory.json:ro
   
   rabbitmq:
     container_name: rabbitmq
