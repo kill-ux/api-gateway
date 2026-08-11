@@ -38,8 +38,6 @@ services:
     ports:
       - "8888:8888"
       - "8500:8500"
-    volumes:
-      - ./mocks/inventory.json:/hoverfly/inventory.json
   
   rabbitmq:
     container_name: rabbitmq
