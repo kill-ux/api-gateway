@@ -41,6 +41,8 @@ integration_test_job:
         echo "Waiting for api-gateway..."
         sleep 1
       done
+      docker ps
+      docker logs api-gateway
     - pytest -v tests/integration
     - pytest -v tests/integration
   after_script:
