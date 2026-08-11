@@ -33,6 +33,7 @@ integration_test_job:
     - apk add --no-cache python3 py3-pip
     - pip install -r requirements.txt --break-system-packages
     - pip install -r requirements-dev.txt --break-system-packages
-    - docker compose up -d -f tests/integration/docker-compose.yml
+    - docker compose -f tests/integration/docker-compose.yml up -d
+    - sleep 5
     - pytest -v tests/integration
 
