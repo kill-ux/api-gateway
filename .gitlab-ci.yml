@@ -44,7 +44,7 @@ integration_test_job:
     - docker inspect api-gateway | grep -A 10 Networks
     - |
       for i in $(seq 1 30); do
-        wget -q -O- http://api-gateway:3000/health && break
+        wget -q -O- http://api-gateway:3000/health
         echo 
         wget -q -O- http://api-gateway:3000/api/movies && echo && break
         echo "Waiting for api-gateway..."
