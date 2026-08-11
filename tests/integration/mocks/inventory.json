@@ -1,32 +1,32 @@
-// {
-//     "data": {
-//         "pairs": [
-//             {
-//                 "request": {
-//                     "path": [
-//                         {
-//                             "matcher": "exact",
-//                             "value": "/api/movies"
-//                         }
-//                     ],
-//                     "method": [
-//                         {
-//                             "matcher": "exact",
-//                             "value": "GET"
-//                         }
-//                     ]
-//                 },
-//                 "response": {
-//                     "status": 200,
-//                     "body": "[{\"id\":1,\"title\":\"Titanic\",\"description\":\"A romantic drama\"},{\"id\":2,\"title\":\"Inception\",\"description\":\"Sci-fi thriller\"}]",
-//                     "encodedBody": false,
-//                     "headers": {
-//                         "Content-Type": [
-//                             "application/json"
-//                         ]
-//                     }
-//                 }
-//             }
-//         ]
-//     }
-// }
+{
+    "data": {
+        "pairs": [
+            {
+                "request": {
+                    "path": [
+                        {
+                            "matcher": "exact",
+                            "value": "/api/movies"
+                        }
+                    ],
+                    "method": [
+                        {
+                            "matcher": "exact",
+                            "value": "GET"
+                        }
+                    ]
+                },
+                "response": {
+                    "status": 200,
+                    "body": "[{\"id\":1,\"title\":\"Titanic\",\"description\":\"A romantic drama\"},{\"id\":2,\"title\":\"Inception\",\"description\":\"Sci-fi thriller\"}]",
+                    "encodedBody": false,
+                    "headers": {
+                        "Content-Type": [
+                            "application/json"
+                        ]
+                    }
+                }
+            }
+        ]
+    }
+}
