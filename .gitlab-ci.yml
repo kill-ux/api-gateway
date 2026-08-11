@@ -11,21 +11,21 @@ cache:
   paths:
     - .cache/pip
 
-# build_job:
-#   stage: build
-#   image: python:3.12-slim
-#   script:
-#     - pip install --upgrade pip setuptools wheel
-#     - pip install -r requirements.txt
-#     - python3 -m compileall app/
+build_job:
+  stage: build
+  image: python:3.12-slim
+  script:
+    - pip install --upgrade pip setuptools wheel
+    - pip install -r requirements.txt
+    - python3 -m compileall app/
 
-# unit_test_job:
-#   stage: test
-#   image: python:3.12-slim
-#   script:
-#     - pip install -r requirements.txt
-#     - pip install -r requirements-dev.txt
-#     - pytest -v tests/unit
+unit_test_job:
+  stage: test
+  image: python:3.12-slim
+  script:
+    - pip install -r requirements.txt
+    - pip install -r requirements-dev.txt
+    - pytest -v tests/unit
 
 integration_test_job:
   stage: test
@@ -41,7 +41,7 @@ integration_test_job:
     - docker logs api-gateway
     - JOB_ID=$(docker ps | grep project-2-concurrent-0 | cut -d ' ' -f 1)
     - docker inspect $JOB_ID | grep -A 10 Networks
-    - sudo docker inspect api-gateway | grep -A 10 Networks
+    - docker inspect api-gateway | grep -A 10 Networks
     - |
       for i in $(seq 1 30); do
         docker compose -f tests/integration/docker-compose.yml exec -T api-gateway wget -q -O- http://localhost:3000/health && break
