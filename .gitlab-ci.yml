@@ -37,15 +37,14 @@ integration_test_job:
     - docker compose -f tests/integration/docker-compose.yml up -d
     - tree
     - docker logs inventory-mock
-    - |
-      for i in $(seq 1 30); do
-        wget -q -O- http://api-gateway:3000/health
-        echo 
-        wget -q -O- http://api-gateway:3000/api/movies && echo && break
-        echo "Waiting for api-gateway..."
-        sleep 1
-      done
-    - docker logs inventory-mock
+    # - |
+    #   for i in $(seq 1 30); do
+    #     wget -q -O- http://api-gateway:3000/health
+    #     echo 
+    #     wget -q -O- http://api-gateway:3000/api/movies && echo && break
+    #     echo "Waiting for api-gateway..."
+    #     sleep 1
+    #   done
     - pytest -v tests/integration
   after_script:
     - docker compose -f tests/integration/docker-compose.yml down
