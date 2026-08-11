@@ -34,15 +34,15 @@ integration_test_job:
     - pip install -r requirements.txt --break-system-packages
     - pip install -r requirements-dev.txt --break-system-packages
     - docker compose -f tests/integration/docker-compose.yml up -d
-    -  - docker compose -f tests/integration/docker-compose.yml up -d
+    - sleep 10
+    - docker ps
+    - docker logs api-gateway
     - |
       for i in $(seq 1 30); do
         docker compose -f tests/integration/docker-compose.yml exec -T api-gateway wget -q -O- http://localhost:3000/health && break
         echo "Waiting for api-gateway..."
         sleep 1
       done
-      docker ps
-      docker logs api-gateway
     - pytest -v tests/integration
     - pytest -v tests/integration
   after_script:
