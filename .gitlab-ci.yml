@@ -30,6 +30,8 @@ unit_test_job:
 integration_test_job:
   stage: test
   script:
+    - apt install python3-full -y
+    
     - pip install -r requirements.txt
     - pip install -r requirements-dev.txt
     - docker compose up -d -f tests/integration/docker-compose.yml
