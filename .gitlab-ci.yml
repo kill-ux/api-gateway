@@ -30,7 +30,7 @@ unit_test_job:
 integration_test_job:
   stage: test
   script:
-    - apt install python3-full -y
+    - apk add --no-cache python3 py3-pip
     
     - pip install -r requirements.txt
     - pip install -r requirements-dev.txt
