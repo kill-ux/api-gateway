@@ -13,6 +13,8 @@ services:
       APIGATEWAY_PORT: 3000
       INVENTORY_APP_HOST: inventory-mock
       INVENTORY_APP_PORT: 8500
+      BILLING_APP_HOST: billing-mock
+      BILLING_APP_PORT: 8500
       RABBITMQ_HOST: rabbitmq
       RABBITMQ_QUEUE: rabbit
       RABBITMQ_USER: rabbit
@@ -24,6 +26,8 @@ services:
       rabbitmq:
         condition: service_healthy
       inventory-mock:
+        condition: service_started
+      billing-mock:
         condition: service_started
     healthcheck:
       test: ["CMD", "wget", "-q", "-O-", "http://127.0.0.1:3000/health"]
@@ -67,7 +71,7 @@ services:
     ports:
       - "8501:8500"
     healthcheck:
-      test: ["CMD", "wget", "-q", "-O-", "http://localhost:8500/api/movies"]
+      test: ["CMD", "wget", "-q", "-O-", "http://localhost:8500/api/billing/"]
       interval: 5s
       timeout: 3s
       retries: 5
