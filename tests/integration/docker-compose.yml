@@ -25,6 +25,12 @@ services:
         condition: service_healthy
       inventory-mock:
         condition: service_started
+    healthcheck:
+      test: ["CMD", "wget", "-q", "-O-", "http://127.0.0.1:3000/health"]
+      interval: 5s
+      timeout: 3s
+      retries: 5
+      start_period: 1s
   inventory-mock:
     container_name: inventory-mock
     networks:
@@ -38,6 +44,12 @@ services:
     ports:
       - "8888:8888"
       - "8500:8500"
+    healthcheck:
+      test: ["CMD", "wget", "-q", "-O-", "http://localhost:8500/api/movies"]
+      interval: 5s
+      timeout: 3s
+      retries: 5
+      start_period: 1s
   
   rabbitmq:
     container_name: rabbitmq
