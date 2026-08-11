@@ -1,6 +1,12 @@
+networks:
+  integration-net:
+    external: true
+
 services:
   api-gateway:
     container_name: api-gateway
+    networks:
+      - integration-net
     build:
       context: ../../
     environment:
@@ -21,6 +27,8 @@ services:
         condition: service_started
   inventory-mock:
     container_name: inventory-mock
+    networks:
+      - integration-net
     image: spectolabs/hoverfly:latest
     command:
       - "-webserver"
@@ -33,6 +41,8 @@ services:
   
   rabbitmq:
     container_name: rabbitmq
+    networks:
+      - integration-net
     image: killux3k/rabbitmq:1.0.0
     healthcheck:
       test: ["CMD", "rabbitmq-diagnostics", "ping"]

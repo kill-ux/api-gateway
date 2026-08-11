@@ -36,4 +36,6 @@ integration_test_job:
     - docker compose -f tests/integration/docker-compose.yml up -d
     - sleep 5
     - pytest -v tests/integration
+  after_script:
+    - docker compose -f tests/integration/docker-compose.yml down
 
