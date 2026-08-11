@@ -1,5 +1,6 @@
 services:
   api-gateway:
+    container_name: api-gateway
     build:
       context: ../../
     environment:
@@ -19,6 +20,7 @@ services:
       inventory-mock:
         condition: service_started
   inventory-mock:
+    container_name: inventory-mock
     image: spectolabs/hoverfly:latest
     command:
       - "-webserver"
@@ -30,6 +32,7 @@ services:
       - ./mocks/inventory.json:/hoverfly/inventory.json:ro
   
   rabbitmq:
+    container_name: rabbitmq
     image: killux3k/rabbitmq:1.0.0
     healthcheck:
       test: ["CMD", "rabbitmq-diagnostics", "ping"]
