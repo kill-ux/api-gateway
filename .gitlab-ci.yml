@@ -38,7 +38,7 @@ integration_test_job:
     - cat /etc/hosts
     - ip addr
     - docker ps
-    - docker logs api-gateway
+    - docker logs inventory-mock
     - JOB_ID=$(docker ps | grep project-2-concurrent-0 | cut -d ' ' -f 1)
     - docker inspect $JOB_ID | grep -A 10 Networks
     - docker inspect api-gateway | grep -A 10 Networks
