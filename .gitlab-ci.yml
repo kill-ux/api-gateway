@@ -43,17 +43,12 @@ integration_test_job:
     - docker inspect $JOB_ID | grep -A 10 Networks
     - docker inspect api-gateway | grep -A 10 Networks
     - |
-      while true; do
-          echo "Running... Press [CTRL+C] to stop."
-          sleep 1
+      for i in $(seq 1 30); do
+        wget -q -O- http://api-gateway:3000/health && break
+        echo "Waiting for api-gateway..."
+        sleep 1
       done
-    # - |
-    #   for i in $(seq 1 30); do
-    #     docker compose -f tests/integration/docker-compose.yml exec -T api-gateway wget -q -O- http://localhost:3000/health && break
-    #     echo "Waiting for api-gateway..."
-    #     sleep 1
-    #   done
-    # - pytest -v tests/integration
+    - pytest -v tests/integration
   after_script:
     - docker compose -f tests/integration/docker-compose.yml down
 
