@@ -35,7 +35,7 @@ integration_test_job:
     - pip install -r requirements.txt --break-system-packages
     - pip install -r requirements-dev.txt --break-system-packages
     - docker compose -f tests/integration/docker-compose.yml up -d --wait
-    - pytest -v tests/integration
+    - pytest -vs tests/integration
   after_script:
     - docker compose -f tests/integration/docker-compose.yml down
 

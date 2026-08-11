@@ -10,6 +10,7 @@ def test_gateway_forwards_get_request_to_inventory():
 
     assert response.status_code == 200
     body = response.json()
+    print(body)
     assert body[0]["id"] == 1
 
 def test_gateway_forwards_get_request_to_billing():
