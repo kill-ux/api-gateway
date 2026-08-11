@@ -29,7 +29,9 @@ services:
     container_name: inventory-mock
     networks:
       - integration-net
-    image: spectolabs/hoverfly:latest
+    build:
+      context: .
+      dockerfile: hoverfly.Dockerfile
     command:
       - "-webserver"
       - "-import=/hoverfly/inventory.json"
