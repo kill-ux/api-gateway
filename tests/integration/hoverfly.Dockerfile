@@ -1,3 +1,5 @@
-# tests/integration/hoverfly.Dockerfile
 FROM spectolabs/hoverfly:latest
-COPY mocks/inventory.json /hoverfly/inventory.json
+
+ARG MOCK_FILE
+
+COPY mocks/${MOCK_FILE}.json /hoverfly/${MOCK_FILE}.json

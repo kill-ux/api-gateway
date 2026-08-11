@@ -38,12 +38,34 @@ services:
     build:
       context: .
       dockerfile: hoverfly.Dockerfile
+      args:
+        MOCK_FILE: inventory 
     command:
       - "-webserver"
       - "-import=/hoverfly/inventory.json"
     ports:
-      - "8888:8888"
       - "8500:8500"
+    healthcheck:
+      test: ["CMD", "wget", "-q", "-O-", "http://localhost:8500/api/movies"]
+      interval: 5s
+      timeout: 3s
+      retries: 5
+      start_period: 1s
+
+  billing-mock:
+    container_name: billing-mock
+    networks:
+      - integration-net
+    build:
+      context: .
+      dockerfile: hoverfly.Dockerfile
+      args:
+        MOCK_FILE: billing    
+    command:
+      - "-webserver"
+      - "-import=/hoverfly/billing.json"
+    ports:
+      - "8501:8500"
     healthcheck:
       test: ["CMD", "wget", "-q", "-O-", "http://localhost:8500/api/movies"]
       interval: 5s
