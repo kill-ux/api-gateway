@@ -1,0 +1,229 @@
+{
+    "data": {
+        "pairs": [
+            {
+                "request": {
+                    "path": [
+                        {
+                            "matcher": "exact",
+                            "value": "/api/movies"
+                        }
+                    ],
+                    "method": [
+                        {
+                            "matcher": "exact",
+                            "value": "GET"
+                        }
+                    ]
+                },
+                "response": {
+                    "status": 200,
+                    "body": "{\"movies\":[{\"id\":1,\"title\":\"Titanic\",\"description\":\"A romantic drama\"},{\"id\":2,\"title\":\"Inception\",\"description\":\"Sci-fi thriller\"}]}",
+                    "encodedBody": false,
+                    "headers": {
+                        "Content-Type": [
+                            "application/json"
+                        ]
+                    }
+                }
+            },
+            {
+                "request": {
+                    "path": [
+                        {
+                            "matcher": "exact",
+                            "value": "/api/movies"
+                        }
+                    ],
+                    "method": [
+                        {
+                            "matcher": "exact",
+                            "value": "POST"
+                        }
+                    ]
+                },
+                "response": {
+                    "status": 201,
+                    "body": "{\"id\":3,\"title\":\"New Movie\",\"description\":\"Just added\"}",
+                    "encodedBody": false,
+                    "headers": {
+                        "Content-Type": [
+                            "application/json"
+                        ]
+                    }
+                }
+            },
+            {
+                "request": {
+                    "path": [
+                        {
+                            "matcher": "exact",
+                            "value": "/api/movies"
+                        }
+                    ],
+                    "method": [
+                        {
+                            "matcher": "exact",
+                            "value": "DELETE"
+                        }
+                    ]
+                },
+                "response": {
+                    "status": 204,
+                    "body": "",
+                    "encodedBody": false,
+                    "headers": {}
+                }
+            },
+            {
+                "request": {
+                    "path": [
+                        {
+                            "matcher": "exact",
+                            "value": "/api/movies/1"
+                        }
+                    ],
+                    "method": [
+                        {
+                            "matcher": "exact",
+                            "value": "GET"
+                        }
+                    ]
+                },
+                "response": {
+                    "status": 200,
+                    "body": "{\"id\":1,\"title\":\"Titanic\",\"description\":\"A romantic drama\"}",
+                    "encodedBody": false,
+                    "headers": {
+                        "Content-Type": [
+                            "application/json"
+                        ]
+                    }
+                }
+            },
+            {
+                "request": {
+                    "path": [
+                        {
+                            "matcher": "exact",
+                            "value": "/api/movies/1"
+                        }
+                    ],
+                    "method": [
+                        {
+                            "matcher": "exact",
+                            "value": "PUT"
+                        }
+                    ]
+                },
+                "response": {
+                    "status": 200,
+                    "body": "{\"id\":1,\"title\":\"Titanic Updated\",\"description\":\"Updated description\"}",
+                    "encodedBody": false,
+                    "headers": {
+                        "Content-Type": [
+                            "application/json"
+                        ]
+                    }
+                }
+            },
+            {
+                "request": {
+                    "path": [
+                        {
+                            "matcher": "exact",
+                            "value": "/api/movies/1"
+                        }
+                    ],
+                    "method": [
+                        {
+                            "matcher": "exact",
+                            "value": "DELETE"
+                        }
+                    ]
+                },
+                "response": {
+                    "status": 204,
+                    "body": "",
+                    "encodedBody": false,
+                    "headers": {}
+                }
+            },
+            {
+                "request": {
+                    "path": [
+                        {
+                            "matcher": "glob",
+                            "value": "/api/movies/*"
+                        }
+                    ],
+                    "method": [
+                        {
+                            "matcher": "exact",
+                            "value": "GET"
+                        }
+                    ]
+                },
+                "response": {
+                    "status": 404,
+                    "body": "{\"error\":\"Movie not found\"}",
+                    "encodedBody": false,
+                    "headers": {
+                        "Content-Type": [
+                            "application/json"
+                        ]
+                    }
+                }
+            },
+            {
+                "request": {
+                    "path": [
+                        {
+                            "matcher": "glob",
+                            "value": "/api/movies?title=*"
+                        }
+                    ],
+                    "method": [
+                        {
+                            "matcher": "exact",
+                            "value": "GET"
+                        }
+                    ]
+                },
+                "response": {
+                    "status": 200,
+                    "body": "{\"movies\":[{\"id\":1,\"title\":\"Titanic\",\"description\":\"A romantic drama\"}]}",
+                    "encodedBody": false,
+                    "headers": {
+                        "Content-Type": [
+                            "application/json"
+                        ]
+                    }
+                }
+            },
+            {
+                "request": {
+                    "path": [
+                        {
+                            "matcher": "glob",
+                            "value": "/*"
+                        }
+                    ]
+                },
+                "response": {
+                    "status": 404,
+                    "body": "{\"error\":\"Path not found\"}",
+                    "encodedBody": false,
+                    "headers": {
+                        "Content-Type": [
+                            "application/json"
+                        ]
+                    }
+                }
+            }
+        ]
+    },
+    "meta": {
+        "schemaVersion": "v5.1"
+    }
+}

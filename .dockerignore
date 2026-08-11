@@ -12,7 +12,6 @@ logs/
 *.md
 Dockerfile
 .dockerignore
-tests/
 .pytest_cache
 .mypy_cache
 node_modules

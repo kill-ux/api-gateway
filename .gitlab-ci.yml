@@ -2,6 +2,7 @@ stages:
   - build
   - test
 
+
 variables:
   PIP_CACHE_DIR: "$CI_PROJECT_DIR/.cache/pip"
 
@@ -25,3 +26,12 @@ unit_test_job:
     - pip install -r requirements.txt
     - pip install -r requirements-dev.txt
     - pytest -v tests/unit
+
+integration_test_job:
+  stage: test
+  script:
+    - pip install -r requirements.txt
+    - pip install -r requirements-dev.txt
+    - docker compose up -d -f tests/integration/docker-compose.yml
+    - pytest -v tests/integration
+

@@ -1,0 +1,43 @@
+services:
+  api-gateway:
+    build:
+      context: ../../
+    environment:
+      APIGATEWAY_PORT: 3000
+      INVENTORY_APP_HOST: inventory-mock
+      INVENTORY_APP_PORT: 8500
+      RABBITMQ_HOST: rabbitmq
+      RABBITMQ_QUEUE: rabbit
+      RABBITMQ_USER: rabbit
+      RABBITMQ_PASS: rabbit
+      RABBITMQ_PORT: "5672"
+    ports:
+      - "3000:3000"
+    depends_on:
+      rabbitmq:
+        condition: service_healthy
+      inventory-mock:
+        condition: service_started
+  inventory-mock:
+    image: spectolabs/hoverfly:latest
+    command:
+      - "-webserver"
+      - "-import=/hoverfly/inventory.json"
+    ports:
+      - "8888:8888"
+      - "8500:8500"
+    volumes:
+      - ./mocks/inventory.json:/hoverfly/inventory.json:ro
+  
+  rabbitmq:
+    image: killux3k/rabbitmq:1.0.0
+    healthcheck:
+      test: ["CMD", "rabbitmq-diagnostics", "ping"]
+      interval: 5s
+      timeout: 3s
+      retries: 5
+      start_period: 15s
+    environment:
+      RABBITMQ_USER: rabbit
+      RABBITMQ_PASS: rabbit
+      RABBITMQ_QUEUE: rabbit
