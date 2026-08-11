@@ -13,5 +13,3 @@ def test_gateway_inventory_list():
 
     assert response.status_code == 200
     assert "movies" in response.json()
-
-
