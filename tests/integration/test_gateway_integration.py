@@ -34,7 +34,7 @@ def test_gateway_forwards_post_request_to_billing():
 
 
 def test_gateway_post_billing_publishes_correct_message_to_rabbitmq():
-    payload = {"user_id": 103, "number_of_items": 2, "total_amount": 89.99}
+    payload = {"user_id": 999, "number_of_items": 7, "total_amount": 12.34}
     response = requests.post(f"{GATEWAY_URL}/api/billing", json=payload)
     assert response.status_code == 202
 
@@ -46,7 +46,6 @@ def test_gateway_post_billing_publishes_correct_message_to_rabbitmq():
     channel.queue_declare(queue="rabbit", durable=True, arguments={"x-queue-type": "quorum"})
 
     method, properties, body = channel.basic_get(queue="rabbit", auto_ack=True)
-
     assert method is not None, "No message found in queue"
     message = json.loads(body)
     assert message == payload
