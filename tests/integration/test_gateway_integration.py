@@ -34,16 +34,31 @@ def test_gateway_forwards_post_request_to_billing():
 
 
 def test_gateway_post_billing_publishes_correct_message_to_rabbitmq():
+    """
+    Confirms the actual message content published to RabbitMQ, not just
+    the HTTP response. Uses a unique payload (user_id=999) so this test
+    is unambiguous about which message it's reading, independent of
+    whatever other tests may have already published to the same queue.
+    """
+
     payload = {"user_id": 999, "number_of_items": 7, "total_amount": 12.34}
-    response = requests.post(f"{GATEWAY_URL}/api/billing", json=payload)
-    assert response.status_code == 202
 
     credentials = pika.PlainCredentials("rabbit", "rabbit")
     connection = pika.BlockingConnection(
         pika.ConnectionParameters(host="rabbitmq", port=5672, credentials=credentials)
     )
     channel = connection.channel()
-    channel.queue_declare(queue="rabbit", durable=True, arguments={"x-queue-type": "quorum"})
+    channel.queue_declare(
+        queue="rabbit", durable=True, arguments={"x-queue-type": "quorum"}
+    )
+
+    while True:
+        method, _, _ = channel.basic_get(queue="rabbit", auto_ack=True)
+        if method is None:
+            break
+
+    resp = requests.post(f"{GATEWAY_URL}/api/billing", json=payload)
+    assert resp.status_code == 202
 
     method, properties, body = channel.basic_get(queue="rabbit", auto_ack=True)
     assert method is not None, "No message found in queue"
