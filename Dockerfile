@@ -2,7 +2,7 @@ FROM alpine:3.18
 
 WORKDIR /workspace
 
-RUN apk add --no-cache python3 py3-pip \
+RUN apk add --no-cache python3 py3-pip && \
     mkdir -p /workspace/logs
 
 COPY ./requirements.txt .

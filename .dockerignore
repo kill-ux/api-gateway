@@ -9,6 +9,7 @@ venv
 .env.*
 *.log
 logs/
+tests/
 *.md
 Dockerfile
 .dockerignore
