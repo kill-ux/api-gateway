@@ -47,6 +47,7 @@ integration_test_job:
   dependencies: []
 
 sonarqube-check:
+  stage: scan
   image:
     name: sonarsource/sonar-scanner-cli:latest
     entrypoint: [""]
