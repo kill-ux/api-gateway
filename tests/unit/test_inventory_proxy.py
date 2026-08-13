@@ -11,7 +11,7 @@ from pytest_mock import MockerFixture
 from unittest.mock import Mock
 
 APP_ROUTES_REQUESTS_REQUEST = "app.routes.requests.request"
-API_INVENTORY = "/api/movies/"
+API_INVENTORY = "/api/movies"
 
 
 def test_proxy_to_inventory_forwards_get(
@@ -26,7 +26,7 @@ def test_proxy_to_inventory_forwards_get(
         APP_ROUTES_REQUESTS_REQUEST, return_value=fake_upstream_response
     )
 
-    resp = client.get(API_INVENTORY)
+    resp = client.get(f"{API_INVENTORY}/")
     assert resp.status_code == 200
     mock_request.assert_called_once()
     called_url = mock_request.call_args.kwargs["url"]
@@ -48,7 +48,7 @@ def test_proxy_to_inventory_handles_connection_error(client, mocker: MockerFixtu
         APP_ROUTES_REQUESTS_REQUEST, side_effect=requests.exceptions.ConnectionError
     )
 
-    resp = client.get(API_INVENTORY)
+    resp = client.get(f"{API_INVENTORY}/")
 
     assert resp.status_code == 503
     assert resp.get_json() == {"error": "Inventory service is down"}
@@ -69,7 +69,7 @@ def test_proxy_to_inventory_forwards_get_with_subpath(
     mock_request = mocker.patch(
         APP_ROUTES_REQUESTS_REQUEST, return_value=fake_upstream_response
     )
-    resp = client.get(f"{API_INVENTORY}123")
+    resp = client.get(f"{API_INVENTORY}/123")
 
     assert resp.status_code == 200
     called_url = mock_request.call_args.kwargs["url"]
@@ -88,7 +88,7 @@ def test_proxy_to_inventory_forwards_post_with_json_body(
         APP_ROUTES_REQUESTS_REQUEST, return_value=fake_upstream_response
     )
     body = {"title": "Inception"}
-    client.post(API_INVENTORY, json=body)
+    client.post(f"{API_INVENTORY}/", json=body)
     assert mock_request.call_args.kwargs["json"] == body
     assert mock_request.call_args.kwargs["method"] == "POST"
 
@@ -105,7 +105,7 @@ def test_proxy_to_inventory_forwards_request_with_no_json_body(
     mock_request = mocker.patch(
         APP_ROUTES_REQUESTS_REQUEST, return_value=fake_upstream_response
     )
-    resp = client.post(API_INVENTORY)
+    resp = client.post(f"{API_INVENTORY}/")
     assert mock_request.call_args.kwargs["json"] == None
     assert resp.status_code == 201
 
@@ -120,7 +120,7 @@ def test_proxy_to_inventory_forwards_query_params(
     mock_request = mocker.patch(
         APP_ROUTES_REQUESTS_REQUEST, return_value=fake_upstream_response
     )
-    resp = client.get(f"{API_INVENTORY}?year=2020&genre=scifi")
+    resp = client.get(f"{API_INVENTORY}/?year=2020&genre=scifi")
 
     assert resp.status_code == 200
     called_params = mock_request.call_args.kwargs["params"]
@@ -159,7 +159,7 @@ def test_proxy_to_inventory_forwards_delete_method(
     mock_request = mocker.patch(
         APP_ROUTES_REQUESTS_REQUEST, return_value=fake_upstream_response
     )
-    resp = client.delete(f"{API_INVENTORY}123")
+    resp = client.delete(f"{API_INVENTORY}/123")
 
     assert resp.status_code == 204
     assert mock_request.call_args.kwargs["method"] == "DELETE"
@@ -175,7 +175,7 @@ def test_proxy_to_inventory_rejects_put_without_subpath(client, mocker: MockerFi
     """
     mock_request = mocker.patch(APP_ROUTES_REQUESTS_REQUEST)
 
-    resp = client.put(API_INVENTORY, json={"title": "Should not work"})
+    resp = client.put(f"{API_INVENTORY}/", json={"title": "Should not work"})
     assert resp.status_code == 405
     mock_request.assert_not_called()
 
@@ -198,7 +198,7 @@ def test_proxy_to_inventory_strips_hop_by_hop_headers(
 
     mocker.patch(APP_ROUTES_REQUESTS_REQUEST, return_value=fake_upstream_response)
 
-    resp = client.get(API_INVENTORY)
+    resp = client.get(f"{API_INVENTORY}/")
     assert resp.status_code == 200
     assert "Transfer-Encoding" not in resp.headers
     assert (
@@ -219,6 +219,6 @@ def test_proxy_to_inventory_passes_through_upstream_status_code(
     fake_upstream_response.status_code = 404
     mocker.patch(APP_ROUTES_REQUESTS_REQUEST, return_value=fake_upstream_response)
 
-    resp = client.get(f"{API_INVENTORY}999")
+    resp = client.get(f"{API_INVENTORY}/999")
 
     assert resp.status_code == 404
