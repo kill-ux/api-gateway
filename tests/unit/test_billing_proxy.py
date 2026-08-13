@@ -15,6 +15,8 @@ from pytest_mock import MockerFixture
 from unittest.mock import Mock
 import requests
 
+APP_ROUTES_REQUESTS_GET = "app.routes.requests.get"
+API_BILLING = "/api/billing/"
 
 def test_proxy_to_billing_forwards_get(
     client, mocker: MockerFixture, fake_upstream_response: Mock
@@ -28,10 +30,10 @@ def test_proxy_to_billing_forwards_get(
     """
     fake_upstream_response.content = b'{"invoices": []}'
     mock_get = mocker.patch(
-        "app.routes.requests.get", return_value=fake_upstream_response
+        APP_ROUTES_REQUESTS_GET, return_value=fake_upstream_response
     )
 
-    resp = client.get("/api/billing/")
+    resp = client.get(API_BILLING)
 
     assert resp.status_code == 200
     called_url = mock_get.call_args.args[0]
@@ -45,10 +47,10 @@ def test_proxy_to_billing_handles_connection_error(client, mocker: MockerFixture
     rather than letting the exception bubble up as a 500.
     """
     mocker.patch(
-        "app.routes.requests.get", side_effect=requests.exceptions.ConnectionError
+        APP_ROUTES_REQUESTS_GET, side_effect=requests.exceptions.ConnectionError
     )
 
-    resp = client.get("/api/billing/")
+    resp = client.get(API_BILLING)
 
     assert resp.status_code == 503
     assert resp.get_json() == {"error": "Billing service is down"}
@@ -63,10 +65,10 @@ def test_proxy_to_billing_forwards_query_params(
     params= kwarg on requests.get().
     """
     mock_get = mocker.patch(
-        "app.routes.requests.get", return_value=fake_upstream_response
+        APP_ROUTES_REQUESTS_GET, return_value=fake_upstream_response
     )
 
-    resp = client.get("/api/billing/?user_id=42&status=paid")
+    resp = client.get(f"{API_BILLING}?user_id=42&status=paid")
 
     assert resp.status_code == 200
     called_params = mock_get.call_args.kwargs["params"]
@@ -91,9 +93,9 @@ def test_proxy_to_billing_strips_hop_by_hop_headers(
         "Content-Length": "50",
         "Connection": "keep-alive",
     }
-    mocker.patch("app.routes.requests.get", return_value=fake_upstream_response)
+    mocker.patch(APP_ROUTES_REQUESTS_GET, return_value=fake_upstream_response)
 
-    resp = client.get("/api/billing/")
+    resp = client.get(API_BILLING)
 
     assert resp.status_code == 200
     assert "Transfer-Encoding" not in resp.headers
@@ -110,9 +112,9 @@ def test_proxy_to_billing_passes_through_upstream_status_code(
     caller, not swallowed or translated into something else.
     """
     fake_upstream_response.status_code = 404
-    mocker.patch("app.routes.requests.get", return_value=fake_upstream_response)
+    mocker.patch(APP_ROUTES_REQUESTS_GET, return_value=fake_upstream_response)
 
-    resp = client.get("/api/billing/")
+    resp = client.get(API_BILLING)
 
     assert resp.status_code == 404
 
@@ -124,9 +126,9 @@ def test_proxy_to_billing_rejects_put(client, mocker: MockerFixture):
     — asserting requests.get was never called proves the rejection happens
     at the routing layer, not inside our code.
     """
-    mock_get = mocker.patch("app.routes.requests.get")
+    mock_get = mocker.patch(APP_ROUTES_REQUESTS_GET)
 
-    resp = client.put("/api/billing/", json={"status": "should not work"})
+    resp = client.put(API_BILLING, json={"status": "should not work"})
 
     assert resp.status_code == 405
     mock_get.assert_not_called()
@@ -136,9 +138,9 @@ def test_proxy_to_billing_rejects_delete(client, mocker: MockerFixture):
     """
     Same check as test_proxy_to_billing_rejects_put, but for DELETE.
     """
-    mock_get = mocker.patch("app.routes.requests.get")
+    mock_get = mocker.patch(APP_ROUTES_REQUESTS_GET)
 
-    resp = client.delete("/api/billing/")
+    resp = client.delete(API_BILLING)
 
     assert resp.status_code == 405
     mock_get.assert_not_called()

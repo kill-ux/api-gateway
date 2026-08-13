@@ -11,6 +11,8 @@ publish-time failure modes.
 from pytest_mock import MockerFixture
 import pika.exceptions
 
+APP_ROUTES_PIKA = "app.routes.pika.BlockingConnection"
+
 
 def test_queue_order_missing_rabbitmq_host_returns_500(client, monkeypatch):
     """
@@ -45,7 +47,7 @@ def test_queue_order_publishes_successfully(client, mocker: MockerFixture):
     (not mock_connection.return_value) because connection.channel() is a
     method call in the route, not calling connection itself.
     """
-    mock_connection = mocker.patch("app.routes.pika.BlockingConnection").return_value
+    mock_connection = mocker.patch(APP_ROUTES_PIKA).return_value
     mock_channel = mock_connection.channel.return_value
 
     resp = client.post(
@@ -65,10 +67,10 @@ def test_queue_order_declares_durable_quorum_queue(client, mocker: MockerFixture
     survive a RabbitMQ node restart, not just that *a* queue gets
     declared.
     """
-    mock_connection = mocker.patch("app.routes.pika.BlockingConnection").return_value
+    mock_connection = mocker.patch(APP_ROUTES_PIKA).return_value
     mock_channel = mock_connection.channel.return_value
 
-    resp = client.post(
+    client.post(
         "/api/billing/",
         json={"user_id": 1, "number_of_items": 2, "total_amount": 99.99},
     )
@@ -88,7 +90,7 @@ def test_queue_order_missing_required_fields_returns_400(client, mocker: MockerF
     route — without mocking it, this test would attempt a real network
     connection to RabbitMQ.
     """
-    mock_connection = mocker.patch("app.routes.pika.BlockingConnection")
+    mocker.patch(APP_ROUTES_PIKA)
     resp = client.post("/api/billing/", json={"user_id": 1, "number_of_items": 2})
 
     assert resp.status_code == 400
@@ -105,9 +107,9 @@ def test_queue_order_uses_correct_credentials(client, mocker: MockerFixture):
     "live" in the test would just be comparing the constant to itself and
     wouldn't catch a real regression.
     """
-    mock_connection = mocker.patch("app.routes.pika.BlockingConnection")
+    mock_connection = mocker.patch(APP_ROUTES_PIKA)
 
-    resp = client.post(
+    client.post(
         "/api/billing/",
         json={"user_id": 1, "number_of_items": 2, "total_amount": 99.99},
     )
@@ -125,8 +127,8 @@ def test_queue_order_connection_error_returns_503(client, mocker: MockerFixture)
     reflects an actual failure mode and is distinguishable from
     test_queue_order_publish_error_returns_503 below.
     """
-    mock_connection = mocker.patch(
-        "app.routes.pika.BlockingConnection",
+    mocker.patch(
+        APP_ROUTES_PIKA,
         side_effect=pika.exceptions.AMQPConnectionError("Connection refused"),
     )
 
@@ -148,7 +150,7 @@ def test_queue_order_publish_error_returns_503(client, mocker: MockerFixture):
     route, so this confirms that path works too, not just the connection
     failure case above.
     """
-    mock_connection_class = mocker.patch("app.routes.pika.BlockingConnection")
+    mock_connection_class = mocker.patch(APP_ROUTES_PIKA)
     mock_connection = mock_connection_class.return_value
     mock_channel = mock_connection.channel.return_value
     mock_channel.basic_publish.side_effect = Exception("bomm")
