@@ -35,7 +35,7 @@ integration_test_job:
     - pip install -r requirements.txt --break-system-packages
     - pip install -r requirements-dev.txt --break-system-packages
     - docker compose -f tests/integration/docker-compose.yml up -d --wait
-    - pytest -vs tests/integration
+    - pytest tests/integration --cov=app --cov-report=xml:coverage.xml --cov-report=term --junitxml=test-results.xml
   after_script:
     - docker compose -f tests/integration/docker-compose.yml down --rmi local
 
