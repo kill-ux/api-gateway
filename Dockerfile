@@ -4,7 +4,7 @@ WORKDIR /workspace
 
 RUN apk add --no-cache python3 py3-pip && \
     mkdir -p /workspace/logs && \
-    adduser appuser
+    adduser -D appuser
 
 COPY ./requirements.txt .
 
