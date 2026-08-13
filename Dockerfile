@@ -10,6 +10,9 @@ COPY ./requirements.txt .
 
 RUN pip install --no-cache-dir -r requirements.txt
 
-COPY . .
+COPY ./app ./app
+COPY ./server.py ./server.py
+
+USER appuser
 
 ENTRYPOINT ["python3", "server.py"]

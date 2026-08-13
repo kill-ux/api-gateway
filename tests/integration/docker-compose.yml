@@ -37,7 +37,7 @@ services:
       start_period: 1s
   inventory-mock:
     container_name: inventory-mock
-    networks:
+    networks: 
       - integration-net
     build:
       context: .
