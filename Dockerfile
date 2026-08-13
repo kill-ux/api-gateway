@@ -12,6 +12,7 @@ RUN pip install --no-cache-dir -r requirements.txt
 COPY ./app ./app
 COPY ./server.py ./server.py
 
+RUN chown -R appuser:appgroup /workspace
 USER appuser
 
 ENTRYPOINT ["python3", "server.py"]
