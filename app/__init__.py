@@ -28,7 +28,7 @@ def get_env_variable(name, cast_type=str):
     """
     
     value = os.getenv(name)
-    if name is None:
+    if value is None:
         raise RuntimeError(f"CRITICAL ERROR: Environment variable '{name}' is not set.")
     try:
         return cast_type(value)
