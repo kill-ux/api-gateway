@@ -69,4 +69,4 @@ trivy_dependency_scan:
     name: aquasec/trivy:latest
     entrypoint: [""]
   script:
-    - trivy fs --scanners vuln,secret,misconfig --severity HIGH,CRITICAL --exit-code 1 .
+    - trivy fs --quiet --scanners vuln,secret,misconfig --severity HIGH,CRITICAL --exit-code 1 .
