@@ -26,6 +26,22 @@
                         ]
                     }
                 }
+            },
+            {
+                "request": {
+                    "path": [
+                        {
+                            "matcher": "exact",
+                            "value": "/health"
+                        }
+                    ],
+                    "method": [
+                        {
+                            "matcher": "exact",
+                            "value": "GET"
+                        }
+                    ]
+                }
             }
         ]
     }
