@@ -27,6 +27,12 @@ unit_test_job:
     - pip install -r requirements.txt
     - pip install -r requirements-dev.txt
     - pytest -v tests/unit --cov=app --cov-report=xml:coverage.xml --cov-report=term --junitxml=test-results.xml
+  artifacts:
+    paths:
+      - coverage.xml
+      - test-results.xml
+    expire_in: 1h
+  dependencies: []
 
 integration_test_job:
   stage: test
@@ -38,6 +44,7 @@ integration_test_job:
     - pytest -v tests/integration
   after_script:
     - docker compose -f tests/integration/docker-compose.yml down --rmi local
+  dependencies: []
 
 sonarqube-check:
   image:
