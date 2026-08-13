@@ -1,4 +1,4 @@
-FROM spectolabs/hoverfly:latest
+FROM spectolabs/hoverfly:v1.12.11
 ARG MOCK_FILE
 
 RUN adduser -D appuser

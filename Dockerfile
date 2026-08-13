@@ -17,3 +17,6 @@ RUN chown -R appuser:appuser /workspace
 USER appuser
 
 ENTRYPOINT ["python3", "server.py"]
+
+HEALTHCHECK --interval=5s --timeout=3s --start-interval=1s --retries=5 \
+    CMD wget -q -O- http://127.0.0.1:3000/health
