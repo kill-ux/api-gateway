@@ -62,3 +62,11 @@ sonarqube-check:
     - sonar-scanner
   only:
     - main
+
+trivy_dependency_scan:
+  stage: scan
+  image:
+    name: aquasec/trivy:latest
+    entrypoint: [""]
+  script:
+    - trivy fs --scanners vuln,secret,misconfig --severity HIGH,CRITICAL --exit-code 1 .
