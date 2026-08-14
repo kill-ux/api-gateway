@@ -77,7 +77,7 @@ containerize_app:
   variables:
     DOCKERHUB_REPO: $DOCKERHUB_USER/api-gateway
   before_script:
-    - echo $DOCKERHUB_PASS | docker login -u $DOCKERHUB_USER --password--stdin
+    - echo $DOCKERHUB_PASS | docker login -u $DOCKERHUB_USER --password-stdin
   script:
     - TAG_ARGS="-t $DOCKERHUB_REPO:$CI_COMMIT_SHA"
     - |
