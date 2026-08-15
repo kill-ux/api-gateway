@@ -1,3 +1,1 @@
 # api-gateway
-
-test
