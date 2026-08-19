@@ -20,6 +20,8 @@ build_job:
     - pip install -r requirements.txt
     - pip install -r requirements-dev.txt
     - python3 -m compileall app/
+  rules:
+    - if: "$CI_COMMIT_REF_PROTECTED"
 
 unit_test_job:
   stage: test
@@ -34,6 +36,8 @@ unit_test_job:
       - test-results.xml
     expire_in: 1h
   dependencies: []
+  rules:
+    - if: "$CI_COMMIT_REF_PROTECTED"
 
 integration_test_job:
   stage: test
@@ -46,6 +50,8 @@ integration_test_job:
   after_script:
     - docker compose -f tests/integration/docker-compose.yml down --rmi local
   dependencies: []
+  rules:
+    - if: "$CI_COMMIT_REF_PROTECTED"
 
 sonarqube-check:
   stage: scan
@@ -61,8 +67,9 @@ sonarqube-check:
       - .sonar/cache
   script:
     - sonar-scanner
-  only:
-    - main
+  rules:
+    - if: "$CI_COMMIT_REF_PROTECTED"
+    
 
 trivy_dependency_scan:
   stage: scan
@@ -71,6 +78,8 @@ trivy_dependency_scan:
     entrypoint: [""]
   script:
     - trivy fs --quiet --scanners vuln,secret,misconfig --exit-code 1 .
+  rules:
+    - if: "$CI_COMMIT_REF_PROTECTED"
 
 containerize_app:
   stage: package
@@ -87,4 +96,5 @@ containerize_app:
     - docker build $TAG_ARGS .
     - docker push --all-tags $DOCKERHUB_REPO
   dependencies: []
-  
+  rules:
+    - if: "$CI_COMMIT_REF_PROTECTED"
