@@ -1,0 +1,113 @@
+{
+    "taskDefinitionArn": "arn:aws:ecs:eu-west-3:969209892845:task-definition/api-gateway:77",
+    "containerDefinitions": [
+        {
+            "name": "api-gateway",
+            "image": "killux3k/api-gateway:latest",
+            "cpu": 128,
+            "memory": 256,
+            "portMappings": [
+                {
+                    "containerPort": 3000,
+                    "hostPort": 3000,
+                    "protocol": "tcp",
+                    "name": "api-gateway"
+                }
+            ],
+            "essential": true,
+            "environment": [
+                {
+                    "name": "RABBITMQ_QUEUE",
+                    "value": "billing-queue"
+                },
+                {
+                    "name": "BILLING_APP_PORT",
+                    "value": "8080"
+                },
+                {
+                    "name": "RABBITMQ_PORT",
+                    "value": "5672"
+                },
+                {
+                    "name": "INVENTORY_APP_PORT",
+                    "value": "8080"
+                },
+                {
+                    "name": "APIGATEWAY_PORT",
+                    "value": "3000"
+                },
+                {
+                    "name": "BILLING_APP_HOST",
+                    "value": "billing"
+                },
+                {
+                    "name": "INVENTORY_APP_HOST",
+                    "value": "inventory"
+                },
+                {
+                    "name": "RABBITMQ_HOST",
+                    "value": "rabbitmq"
+                }
+            ],
+            "mountPoints": [],
+            "volumesFrom": [],
+            "secrets": [
+                {
+                    "name": "RABBITMQ_USER",
+                    "valueFrom": "arn:aws:secretsmanager:eu-west-3:969209892845:secret:cloud-design-staging-wPGq50:rabbitmq_user::"
+                },
+                {
+                    "name": "RABBITMQ_PASS",
+                    "valueFrom": "arn:aws:secretsmanager:eu-west-3:969209892845:secret:cloud-design-staging-wPGq50:rabbitmq_password::"
+                }
+            ],
+            "logConfiguration": {
+                "logDriver": "awslogs",
+                "options": {
+                    "awslogs-group": "/ecs/api-gateway-staging",
+                    "awslogs-region": "eu-west-3",
+                    "awslogs-stream-prefix": "ecs"
+                }
+            },
+            "systemControls": []
+        }
+    ],
+    "family": "api-gateway",
+    "executionRoleArn": "arn:aws:iam::969209892845:role/cloud-design-ecs-execution-role-staging",
+    "networkMode": "awsvpc",
+    "revision": 77,
+    "volumes": [],
+    "status": "ACTIVE",
+    "requiresAttributes": [
+        {
+            "name": "com.amazonaws.ecs.capability.logging-driver.awslogs"
+        },
+        {
+            "name": "ecs.capability.execution-role-awslogs"
+        },
+        {
+            "name": "com.amazonaws.ecs.capability.docker-remote-api.1.19"
+        },
+        {
+            "name": "ecs.capability.secrets.asm.environment-variables"
+        },
+        {
+            "name": "com.amazonaws.ecs.capability.docker-remote-api.1.18"
+        },
+        {
+            "name": "ecs.capability.task-eni"
+        }
+    ],
+    "placementConstraints": [],
+    "compatibilities": [
+        "EC2",
+        "MANAGED_INSTANCES"
+    ],
+    "requiresCompatibilities": [
+        "EC2"
+    ],
+    "cpu": "128",
+    "memory": "256",
+    "registeredAt": "2026-08-19T18:23:21.032000+01:00",
+    "registeredBy": "arn:aws:iam::969209892845:user/kill"
+}

@@ -3,6 +3,7 @@ stages:
   - test
   - scan
   - package
+  - deploy
 
 variables:
   PIP_CACHE_DIR: "$CI_PROJECT_DIR/.cache/pip"
@@ -98,3 +99,14 @@ containerize_app:
   dependencies: []
   rules:
     - if: "$CI_COMMIT_REF_PROTECTED"
+
+deploy_staging:
+  stage: deploy
+  image: heyvaldemar/aws-kubectl:latest
+  rules:
+    - if: "$CI_COMMIT_REF_PROTECTED"
+      when: manual
+  variables:
+    AWS_DEFAULT_REGION: eu-west-3
+    ECS_CLUSTER: cloud-design-cluster-staging
+    ECS_SERVICE
