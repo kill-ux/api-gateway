@@ -150,8 +150,8 @@ deploy_staging:
     
     - |
       aws ecs update-service \
-        --cluster "$ECS_CLUSTER"
-        --service "$ECS_SERVICE"
+        --cluster "$ECS_CLUSTER" \
+        --service "$ECS_SERVICE" \
         --task-definition "$TASK_DEF_ARN"
 
     - |
