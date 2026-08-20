@@ -71,7 +71,7 @@ services:
     ports:
       - "8501:8500"
     healthcheck:
-      test: ["CMD", "wget", "-q", "-O-", "http://localhost:8500/api/billing/"]
+      test: ["CMD", "wget", "-q", "-O-", "http://localhost:8500/api/billing"]
       interval: 5s
       timeout: 3s
       retries: 5
