@@ -122,8 +122,6 @@ deploy_staging:
       aws ecs describe-task-definition \
         --task-definition "$ECS_TASK_FAMILY" \
         --query taskDefinition > "$TASK_DEF_JSON"
-    
-    - cat $TASK_DEF_JSON
 
     - |
       jq --arg NAME $CONTAINER_NAME --arg IMAGE $IMAGE_URI '
@@ -142,4 +140,22 @@ deploy_staging:
         )
       ' $TASK_DEF_JSON > $NEW_TASK_DEF_JSON
     
-    - cat $NEW_TASK_DEF_JSON
+    - |
+      export TASK_DEF_ARN=$(
+        aws ecs register-task-definition \
+          --cli-input-json "file://$NEW_TASK_DEF_JSON" \
+          --query taskDefinition.taskDefinitionArn \ 
+          --output text
+      )
+    
+    - |
+      aws ecs update-service \
+        --cluster "$ECS_CLUSTER"
+        --service "$ECS_SERVICE"
+        --task-definition "$TASK_DEF_ARN"
+
+    - |
+      aws ecs wait services-stable \
+        --region "$AWS_DEFAULT_REGION" \
+        --cluster "$ECS_CLUSTER" \
+        --services "$ECS_SERVICE"    
