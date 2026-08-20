@@ -108,12 +108,12 @@ deploy_staging:
       when: manual
   variables:
     ENVIRONMENT: staging
-    TASK-NAME: api-gateway
+    TASK_NAME: api-gateway
     ECS_CLUSTER: cloud-design-cluster-${ENVIRONMENT}
-    ECS_SERVICE: ${TASK-NAME}-service-${ENVIRONMENT}
-    ECS_TASK_FAMILY: ${TASK-NAME}-${ENVIRONMENT}
-    CONTAINER_NAME: ${TASK-NAME}
-    IMAGE_URI: ${DOCKERHUB_USER}/${TASK-NAME}:${CI_COMMIT_SHA}
+    ECS_SERVICE: ${TASK_NAME}-service-${ENVIRONMENT}
+    ECS_TASK_FAMILY: ${TASK_NAME}-${ENVIRONMENT}
+    CONTAINER_NAME: ${TASK_NAME}
+    IMAGE_URI: ${DOCKERHUB_USER}/${TASK_NAME}:${CI_COMMIT_SHA}
     TASK_DEF_JSON: task-definition.json
     NEW_TASK_DEF_JSON: new-task-definition.json
 
