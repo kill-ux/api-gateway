@@ -127,8 +127,7 @@ deploy_staging:
 
     - |
       jq --arg NAME $CONTAINER_NAME --arg IMAGE $IMAGE_URI '
-      .taskDefinition
-      | del(
+        del(
           .taskDefinitionArn,
           .revision,
           .status,
