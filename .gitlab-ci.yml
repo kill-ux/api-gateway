@@ -100,22 +100,14 @@ containerize_app:
   rules:
     - if: "$CI_COMMIT_REF_PROTECTED"
 
-deploy_staging:
+.deploy_ecs:
   stage: deploy
   image: heyvaldemar/aws-kubectl:latest
+
   rules:
-    - if: "$CI_COMMIT_REF_PROTECTED"
+    - if: '$CI_COMMIT_REF_PROTECTED == "true"'
       when: manual
-  variables:
-    ENVIRONMENT: staging
-    TASK_NAME: api-gateway
-    ECS_CLUSTER: cloud-design-cluster-${ENVIRONMENT}
-    ECS_SERVICE: ${TASK_NAME}-service-${ENVIRONMENT}
-    ECS_TASK_FAMILY: ${TASK_NAME}-${ENVIRONMENT}
-    CONTAINER_NAME: ${TASK_NAME}
-    IMAGE_URI: ${DOCKERHUB_USER}/${TASK_NAME}:${CI_COMMIT_SHA}
-    TASK_DEF_JSON: task-definition.json
-    NEW_TASK_DEF_JSON: new-task-definition.json
+    - when: never
 
   script:
     - |
@@ -124,13 +116,17 @@ deploy_staging:
 
       aws ecs describe-task-definition \
         --task-definition "$ECS_TASK_FAMILY" \
-        --query taskDefinition > "$TASK_DEF_JSON"
+        --query 'taskDefinition' \
+        --output json > "$TASK_DEF_JSON"
 
     - |
       echo "=== Updating container image ==="
       set -eu
 
-      jq --arg NAME $CONTAINER_NAME --arg IMAGE $IMAGE_URI '
+      jq \
+        --arg NAME "$CONTAINER_NAME" \
+        --arg IMAGE "$IMAGE_URI" \
+        '
         del(
           .taskDefinitionArn,
           .revision,
@@ -141,20 +137,24 @@ deploy_staging:
           .registeredBy,
           .deregisteredAt
         )
-      | .containerDefinitions |= map(
-          if .name == $NAME then .image = $IMAGE else . end
-        )
-      ' $TASK_DEF_JSON > $NEW_TASK_DEF_JSON
-    
+        | .containerDefinitions |= map(
+            if .name == $NAME then .image = $IMAGE else . end
+          )
+        ' "$TASK_DEF_JSON" > "$NEW_TASK_DEF_JSON"
+
     - |
       echo "=== Registering task definition ==="
       set -eu
 
-      export TASK_DEF_ARN=$(
+      TASK_DEF_ARN="$(
         aws ecs register-task-definition \
           --cli-input-json "file://$NEW_TASK_DEF_JSON" \
           --query 'taskDefinition.taskDefinitionArn' \
-          --output text )
+          --output text
+      )"
+
+      test -n "$TASK_DEF_ARN"
+      export TASK_DEF_ARN
 
     - |
       echo "=== Updating ECS service ==="
@@ -171,4 +171,30 @@ deploy_staging:
 
       aws ecs wait services-stable \
         --cluster "$ECS_CLUSTER" \
-        --services "$ECS_SERVICE"    
+        --services "$ECS_SERVICE"
+
+deploy_staging:
+  extends: .deploy_ecs
+  variables:
+    ENVIRONMENT: staging
+    TASK_NAME: api-gateway
+    ECS_CLUSTER: cloud-design-cluster-${ENVIRONMENT}
+    ECS_SERVICE: ${TASK_NAME}-service-${ENVIRONMENT}
+    ECS_TASK_FAMILY: ${TASK_NAME}-${ENVIRONMENT}
+    CONTAINER_NAME: ${TASK_NAME}
+    IMAGE_URI: ${DOCKERHUB_USER}/${TASK_NAME}:${CI_COMMIT_SHA}
+    TASK_DEF_JSON: task-definition.json
+    NEW_TASK_DEF_JSON: new-task-definition.json
+
+deploy_production:
+  extends: .deploy_ecs
+  variables:
+    ENVIRONMENT: production
+    TASK_NAME: api-gateway
+    ECS_CLUSTER: cloud-design-cluster-${ENVIRONMENT}
+    ECS_SERVICE: ${TASK_NAME}-service-${ENVIRONMENT}
+    ECS_TASK_FAMILY: ${TASK_NAME}-${ENVIRONMENT}
+    CONTAINER_NAME: ${TASK_NAME}
+    IMAGE_URI: ${DOCKERHUB_USER}/${TASK_NAME}:${CI_COMMIT_SHA}
+    TASK_DEF_JSON: task-definition.json
+    NEW_TASK_DEF_JSON: new-task-definition.json
