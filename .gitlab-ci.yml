@@ -144,7 +144,7 @@ deploy_staging:
       export TASK_DEF_ARN=$(
         aws ecs register-task-definition \
           --cli-input-json "file://$NEW_TASK_DEF_JSON" \
-          --query 'taskDefinition.taskDefinitionArn' \ 
+          --query 'taskDefinition.taskDefinitionArn' \
           --output text )
 
     - |
