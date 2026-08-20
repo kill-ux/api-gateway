@@ -21,7 +21,7 @@ RABBITMQ_PASS = os.getenv("RABBITMQ_PASS")
 RABBITMQ_PORT = int(os.getenv("RABBITMQ_PORT"))
 
 API_MOVIES_URL = "/api/movies"
-API_BILLING_URL = "/api/billing"
+API_BILLING_URL = "/api/billing/"
 
 @gateway_bp.route("/health")
 def health():
