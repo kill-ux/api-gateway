@@ -25,7 +25,7 @@ API_BILLING_URL = "/api/billing"
 
 @gateway_bp.route("/health")
 def health():
-  return {"status": "ok"}, 200
+  return {"status": "ok", "version": "v1.1.1"}, 200
 
 
 @gateway_bp.route(API_MOVIES_URL + "/", methods=["GET", "POST", "DELETE"])
