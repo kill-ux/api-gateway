@@ -119,11 +119,15 @@ deploy_staging:
 
   script:
     - |
+      set -eu
+
       aws ecs describe-task-definition \
         --task-definition "$ECS_TASK_FAMILY" \
         --query taskDefinition > "$TASK_DEF_JSON"
 
     - |
+      set -eu
+
       jq --arg NAME $CONTAINER_NAME --arg IMAGE $IMAGE_URI '
         del(
           .taskDefinitionArn,
@@ -135,12 +139,14 @@ deploy_staging:
           .registeredBy,
           .deregisteredAt
         )
-      | .containerDefinitions | map(
+      | .containerDefinitions |= map(
           if .name == $NAME then .image = $IMAGE else . end
         )
       ' $TASK_DEF_JSON > $NEW_TASK_DEF_JSON
     
     - |
+      set -eu
+
       export TASK_DEF_ARN=$(
         aws ecs register-task-definition \
           --cli-input-json "file://$NEW_TASK_DEF_JSON" \
@@ -148,12 +154,16 @@ deploy_staging:
           --output text )
 
     - |
+      set -eu
+
       aws ecs update-service \
         --cluster "$ECS_CLUSTER" \
         --service "$ECS_SERVICE" \
         --task-definition "$TASK_DEF_ARN"
 
     - |
+      set -eu
+
       aws ecs wait services-stable \
         --region "$AWS_DEFAULT_REGION" \
         --cluster "$ECS_CLUSTER" \
