@@ -118,7 +118,8 @@ deploy_staging:
     NEW_TASK_DEF_JSON: new-task-definition.json
 
   script:
-    - aws ecs describe-task-definition \
+    - |
+      aws ecs describe-task-definition \
         --task-definition "$ECS_TASK_FAMILY" \
         --query taskDefinition > "$TASK_DEF_JSON"
     
