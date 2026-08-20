@@ -165,6 +165,5 @@ deploy_staging:
       set -eu
 
       aws ecs wait services-stable \
-        --region "$AWS_DEFAULT_REGION" \
         --cluster "$ECS_CLUSTER" \
         --services "$ECS_SERVICE"    
