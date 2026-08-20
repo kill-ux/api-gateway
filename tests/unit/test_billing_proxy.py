@@ -37,7 +37,7 @@ def test_proxy_to_billing_forwards_get(
 
     assert resp.status_code == 200
     called_url = mock_get.call_args.args[0]
-    assert called_url == "http://billing:5001/api/billing"
+    assert called_url == "http://billing:5001/api/billing/"
 
 
 def test_proxy_to_billing_handles_connection_error(client, mocker: MockerFixture):

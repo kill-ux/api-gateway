@@ -6,7 +6,7 @@
                     "path": [
                         {
                             "matcher": "exact",
-                            "value": "/api/billing"
+                            "value": "/api/billing/"
                         }
                     ],
                     "method": [
