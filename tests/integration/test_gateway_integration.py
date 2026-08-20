@@ -14,7 +14,7 @@ def test_gateway_forwards_get_request_to_inventory():
 
 def test_gateway_forwards_get_request_to_billing():
     """GET through gateway reaches billing-app and returns the item."""
-    response = requests.get(f"{GATEWAY_URL}/api/billing/")
+    response = requests.get(f"{GATEWAY_URL}/api/billing")
 
     assert response.status_code == 200
     body = response.json()
